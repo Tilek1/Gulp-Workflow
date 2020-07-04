@@ -1,7 +1,12 @@
 const gulp = require('gulp');
+const { src, dest } = require('gulp');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
+
+const babel = require('gulp-babel');
+const plumber = require('gulp-plumber');
+
 
 // TOP LEVEL FUNCTIONS
 /*
@@ -41,4 +46,21 @@ gulp.task('concat', async function() {
 	.pipe(gulp.dest('dist/js'));
 })
 
-gulp.task( 'default', ['copyHtml', 'sass', 'concat'])
+// Gulp 4 uses exported objects as its tasks. Here we only have a
+// single export that represents the default gulp task.
+
+exports.default = function(done) {
+	return src('./src/js/*.js')
+			//Stop the process if an error is thrown
+			.pipe(plumber())
+			.pipe(concat('main.js'))
+			//Transpile the JS code using Babel's preset-env
+			.pipe(babel({
+				presets: [
+					['@babel/env', {
+						modules: false
+					}]
+				]
+			}))
+			.pipe(dest('./dist/js'))
+}
