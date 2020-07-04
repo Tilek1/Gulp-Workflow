@@ -1,0 +1,15 @@
+$bgColor: #cccccc;
+
+
+
+body {
+	background: $bgColor;
+}
+
+.container {
+	background-color: yellow;
+
+	&__item {
+		background: red;
+	}
+}
